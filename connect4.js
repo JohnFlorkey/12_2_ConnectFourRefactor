@@ -4,12 +4,20 @@
  * column until a player gets four-in-a-row (horiz, vert, or diag) or until
  * board fills (tie)
  */
+class Player {
+  constructor(color, name) {
+    this.color = color;
+    this.name = name
+  }
 
+}
 class Game {
-  constructor(width, height) {
+  constructor(width, height, color1, color2) {
     this.WIDTH = width ? width : 7; 
     this.HEIGHT = height ? height : 6;
-    this.currPlayer = 1; // active player: 1 or 2
+    this.player1 = new Player(document.getElementById('player1Color').value, 'player1');
+    this.player2 = new Player(document.getElementById('player2Color').value, 'player2');
+    this.currPlayer = this.player1; // active player: 1 or 2
     this.board = []; // array of rows, each row is array of cells  (board[y][x])
     this.gameOver = false;
     this.makeBoard();
@@ -74,7 +82,8 @@ class Game {
   placeInTable(y, x) {
     const piece = document.createElement('div');
     piece.classList.add('piece');
-    piece.classList.add(`p${this.currPlayer}`);
+    // piece.classList.add(`p${this.currPlayer}`);
+    piece.style.backgroundColor = this.currPlayer.color;
     piece.style.top = -50 * (y + 2);
 
     const spot = document.getElementById(`${y}-${x}`);
@@ -103,13 +112,13 @@ class Game {
     }
 
     // place piece in board and add to HTML table
-    this.board[y][x] = this.currPlayer;
+    this.board[y][x] = this.currPlayer.name;
     this.placeInTable(y, x);
     
     // check for win
     if (this.checkForWin()) {
       this.gameOver = true;
-      return this.endGame(`Player ${this.currPlayer} won!`);
+      return this.endGame(`Player ${this.currPlayer.name} won!`);
     }
     
     // check for tie
@@ -118,7 +127,7 @@ class Game {
     }
       
     // switch players
-    this.currPlayer = this.currPlayer === 1 ? 2 : 1;
+    this.currPlayer = this.currPlayer === this.player1 ? this.player2 : this.player1;
   }
 
   win(cells) {
@@ -132,7 +141,7 @@ class Game {
         y < this.HEIGHT &&
         x >= 0 &&
         x < this.WIDTH &&
-        this.board[y][x] === this.currPlayer
+        this.board[y][x] === this.currPlayer.name
     );
   }
 
@@ -157,15 +166,19 @@ class Game {
   }
 
   reset() {
-    this.currPlayer = 1; // active player: 1 or 2
-    this.board = []; // array of rows, each row is array of cells  (board[y][x])
-    this.makeBoard(); // recreate the in-memory board
     const table = document.getElementById('board');
     table.innerText = ''; // "erase" the HTML representation of the board
-    this.makeHtmlBoard(); // recreate the HTML representation of the board 
   }
 }
 
-let game;
+let game; // declare a variable to be an instance of the Game class
+
+// create a function to start or restart the game
+const resetGame = () => {
+  if(game){       // if there is an existing game reset the game board
+    game.reset();
+  }
+  game = new Game(7,6);   // create new instance of Game
+}
 const startBtn = document.getElementById('startGame');
-startBtn.addEventListener('click', () => game ? game.reset() : game = new Game(7,6));
+startBtn.addEventListener('click', resetGame);
