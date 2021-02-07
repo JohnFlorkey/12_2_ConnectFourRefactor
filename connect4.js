@@ -47,7 +47,9 @@ class Game {
     /*
     The solution binds handleClick function, I need to review this with Paritosh
     I believe I saw the result of not binding it as handleClick was getting called while attempting
-    to restart the game
+    to restart the game.
+    I used an arrow function in the definition of handleClick to get this set to the Game object.
+    Bind would have been a better choice.
     */
 
     for (let x = 0; x < this.WIDTH; x++) {
