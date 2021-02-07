@@ -11,6 +11,7 @@ class Game {
     this.HEIGHT = height ? height : 6;
     this.currPlayer = 1; // active player: 1 or 2
     this.board = []; // array of rows, each row is array of cells  (board[y][x])
+    this.gameOver = false;
     this.makeBoard();
     this.makeHtmlBoard();
   }
@@ -89,6 +90,9 @@ class Game {
   /** handleClick: handle click of column top to play piece */
 
   handleClick = (evt) => {
+    if(this.gameOver){
+      return;
+    }
     // get x from ID of clicked cell
     const x = evt.target.id;
 
@@ -104,6 +108,7 @@ class Game {
     
     // check for win
     if (this.checkForWin()) {
+      this.gameOver = true;
       return this.endGame(`Player ${this.currPlayer} won!`);
     }
     
@@ -151,6 +156,16 @@ class Game {
     }
   }
 
+  reset() {
+    this.currPlayer = 1; // active player: 1 or 2
+    this.board = []; // array of rows, each row is array of cells  (board[y][x])
+    this.makeBoard(); // recreate the in-memory board
+    const table = document.getElementById('board');
+    table.innerText = ''; // "erase" the HTML representation of the board
+    this.makeHtmlBoard(); // recreate the HTML representation of the board 
+  }
 }
 
-new Game(7, 6);
+let game;
+const startBtn = document.getElementById('startGame');
+startBtn.addEventListener('click', () => game ? game.reset() : game = new Game(7,6));
