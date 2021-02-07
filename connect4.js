@@ -20,6 +20,7 @@ class Game {
     this.currPlayer = this.player1; // active player: 1 or 2
     this.board = []; // array of rows, each row is array of cells  (board[y][x])
     this.gameOver = false;
+    this.reset();   // if game was in progress reset the html gameboard
     this.makeBoard();
     this.makeHtmlBoard();
   }
@@ -171,14 +172,5 @@ class Game {
   }
 }
 
-let game; // declare a variable to be an instance of the Game class
-
-// create a function to start or restart the game
-const resetGame = () => {
-  if(game){       // if there is an existing game reset the game board
-    game.reset();
-  }
-  game = new Game(7,6);   // create new instance of Game
-}
 const startBtn = document.getElementById('startGame');
-startBtn.addEventListener('click', resetGame);
+startBtn.addEventListener('click', () => new Game(7,6));
