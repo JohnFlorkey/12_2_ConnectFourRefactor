@@ -7,7 +7,7 @@
 class Player {
   constructor(color, name) {
     this.color = color;
-    this.name = name
+    this.name = name          // added this because I didn't think the cell board array assignment to a player instance was working
   }
 
 }
@@ -15,12 +15,12 @@ class Game {
   constructor(width, height, color1, color2) {
     this.WIDTH = width ? width : 7; 
     this.HEIGHT = height ? height : 6;
-    this.player1 = new Player(document.getElementById('player1Color').value, 'player1');
-    this.player2 = new Player(document.getElementById('player2Color').value, 'player2');
+    this.player1 = new Player(document.getElementById('player1Color').value, 'player1'); // I like the solution  of passing players in as objects instead of  
+    this.player2 = new Player(document.getElementById('player2Color').value, 'player2'); // having the game constructor be responsible for them
     this.currPlayer = this.player1; // active player: 1 or 2
-    this.board = []; // array of rows, each row is array of cells  (board[y][x])
+    this.board = []; // array of rows, each row is array of cells  (board[y][x])  // the solution moved this into the makeboard method, I don't see much advantage either way
     this.gameOver = false;
-    this.reset();   // if game was in progress reset the html gameboard
+    this.reset();   // if game was in progress reset the html gameboard   // the solution moved this into the makeHTMLBoard method which I like as the reset function I wrote is no longer needed.
     this.makeBoard();
     this.makeHtmlBoard();
   }
@@ -44,6 +44,11 @@ class Game {
     const top = document.createElement('tr');
     top.setAttribute('id', 'column-top');
     top.addEventListener('click', this.handleClick);
+    /*
+    The solution binds handleClick function, I need to review this with Paritosh
+    I believe I saw the result of not binding it as handleClick was getting called while attempting
+    to restart the game
+    */
 
     for (let x = 0; x < this.WIDTH; x++) {
       const headCell = document.createElement('td');
@@ -95,6 +100,7 @@ class Game {
 
   endGame(msg) {
     alert(msg);
+    // solution removed the handleClick event listener from top here
   }
 
   /** handleClick: handle click of column top to play piece */
@@ -131,6 +137,11 @@ class Game {
     this.currPlayer = this.currPlayer === this.player1 ? this.player2 : this.player1;
   }
 
+  /*
+  solution used arrow function to get this set correctly. I think moving it outside the checkForWin
+  function achieved the same goal, but made the win method accessible outside the context of
+  checkForWin which is not ideal.
+  */
   win(cells) {
     // Check four cells to see if they're all color of current player
     //  - cells: list of four (y, x) cells
